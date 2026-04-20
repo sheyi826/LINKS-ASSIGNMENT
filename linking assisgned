@@ -1,0 +1,118 @@
+### Part 1 & 3 — Stack Implementations ###
+
+# Part 3: Node class for the Linked List version
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+# Part 3: Linked-list version of the Stack
+class Stack:
+    def __init__(self):
+        self.head = None
+        self._size = 0
+
+    def push(self, value):
+        new_node = Node(value)
+        new_node.next = self.head
+        self.head = new_node
+        self._size += 1
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        popped_node = self.head
+        self.head = self.head.next
+        self._size -= 1
+        return popped_node.value
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self.head.value
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        return self._size
+
+### Part 2 — Problem Solving Functions ###
+
+def reverse_string(text):
+    s = Stack()
+    for char in text:
+        s.push(char)
+    
+    reversed_text = ""
+    while not s.is_empty():
+        reversed_text += s.pop()
+    return reversed_text
+
+def is_balanced(parentheses):
+    s = Stack()
+    for char in parentheses:
+        if char == "(":
+            s.push(char)
+        elif char == ")":
+            if s.is_empty():
+                return False
+            s.pop()
+    return s.is_empty()
+
+def undo_system_demo():
+    actions = Stack()
+    print("\n--- Undo System Simulation ---")
+    
+    # Performing actions
+    print("Action: Typed 'Hello'")
+    actions.push("Typed 'Hello'")
+    print("Action: Typed 'World'")
+    actions.push("Typed 'World'")
+    
+    # Undoing
+    print(f"Undo: {actions.pop()}")
+    print(f"Current State: {actions.peek()}")
+
+### Part 4 — Short Answer (Comments) ###
+
+"""
+1. Why are push and pop O(1) in a stack?
+   In a stack, you only ever interact with the 'top' element. Since you don't 
+   need to shift other elements (like in an array) or traverse the entire 
+   list to find the end, the operation takes the same amount of time regardless 
+   of how many items are in the stack.
+
+2. What makes a stack different from a queue?
+   A stack follows LIFO (Last-In, First-Out), meaning the last item added is 
+   the first one removed. A queue follows FIFO (First-In, First-Out), like 
+   a line at a bank where the first person in line is served first.
+
+3. Name two real-world systems that use stack behavior.
+   - The 'Back' button in web browsers (stores the history of pages visited).
+   - The 'Undo' feature in text editors like VS Code.
+"""
+
+### Testing the Implementation ###
+
+if __name__ == "__main__":
+    # Test Stack Methods
+    my_stack = Stack()
+    my_stack.push(10)
+    my_stack.push(20)
+    print(f"Stack Size: {my_stack.size()}")
+    print(f"Top Element (Peek): {my_stack.peek()}")
+    print(f"Popped: {my_stack.pop()}")
+    
+    # Test Reverse String
+    original = "UNILORIN"
+    print(f"\nOriginal: {original} | Reversed: {reverse_string(original)}")
+    
+    # Test Balanced Parentheses
+    test1 = "(())"
+    test2 = "(()"
+    print(f"\nIs '{test1}' balanced? {is_balanced(test1)}")
+    print(f"Is '{test2}' balanced? {is_balanced(test2)}")
+    
+    # Test Undo System
+    undo_system_demo()
