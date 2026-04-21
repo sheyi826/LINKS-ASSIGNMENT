@@ -1,0 +1,131 @@
+# Part 3 — Node class for the Linked-List version
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+# Part 1 — Build a stack class (List-based)
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, value):
+        self.items.append(value)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        return None
+
+    def peek(self):
+        if not self.is_empty():
+            return self.items[-1]
+        return None
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def size(self):
+        return len(self.items)
+
+# Part 3 — Linked-list version
+class LinkedStack:
+    def __init__(self):
+        self.head = None
+        self._size = 0
+
+    def push(self, value):
+        new_node = Node(value)
+        new_node.next = self.head
+        self.head = new_node
+        self._size += 1
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        popped_value = self.head.value
+        self.head = self.head.next
+        self._size -= 1
+        return popped_value
+
+    def peek(self):
+        return self.head.value if self.head else None
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        return self._size
+
+# Part 2 — Use the stack to solve problems
+def reverse_string(text):
+    s = Stack()
+    for char in text:
+        s.push(char)
+    
+    reversed_text = ""
+    while not s.is_empty():
+        reversed_text += s.pop()
+    return reversed_text
+
+def is_balanced(expression):
+    s = Stack()
+    pairs = {')': '(', ']': '[', '}': '{'}
+    for char in expression:
+        if char in "([{":
+            s.push(char)
+        elif char in ")]}":
+            if s.is_empty() or s.pop() != pairs[char]:
+                return False
+    return s.is_empty()
+
+class UndoSystem:
+    def __init__(self):
+        self.history = Stack()
+
+    def perform_action(self, action):
+        print(f"Action: {action}")
+        self.history.push(action)
+
+    def undo(self):
+        action = self.history.pop()
+        if action:
+            print(f"Undoing: {action}")
+        else:
+            print("Nothing to undo.")
+
+# --- Testing and Output ---
+if __name__ == "__main__":
+    print("--- Testing Part 1 & 2 ---")
+    print(f"Reversed 'Gemini': {reverse_string('Gemini')}")
+    print(f"Is '( [ ] )' balanced?: {is_balanced('( [ ] )')}")
+    print(f"Is '( [ )' balanced?: {is_balanced('( [ )')}")
+    
+    undo_app = UndoSystem()
+    undo_app.perform_action("Typed 'Hello'")
+    undo_app.perform_action("Deleted 'o'")
+    undo_app.undo()
+
+    print("\n--- Testing Part 3 (Linked List Stack) ---")
+    ls = LinkedStack()
+    ls.push(10)
+    ls.push(20)
+    print(f"Popped from LinkedStack: {ls.pop()}")
+    print(f"New top: {ls.peek()}")
+
+# Part 4 — Short Answer
+"""
+1. Why are push and pop O(1) in a stack?
+   Because stacks only interact with the 'top' element. In an array/list, adding or 
+   removing from the end doesn't require shifting other elements. In a linked list, 
+   we only update the head pointer, which takes constant time.
+
+2. What makes a stack different from a queue?
+   The order of processing. A stack is LIFO (Last-In, First-Out), meaning the newest 
+   item is removed first. A queue is FIFO (First-In, First-Out), meaning the oldest 
+   item is removed first (like a line at a store).
+
+3. Name two real-world systems that use stack behavior.
+   a) The 'Back' button in web browsers (stores history of visited pages).
+   b) The 'Undo' mechanism (Ctrl+Z) in text editors or photo software.
+"""
