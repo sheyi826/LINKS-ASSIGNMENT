@@ -1,0 +1,147 @@
+# ==========================================
+# PART 1: BUILD A STACK CLASS (List-based)
+# ==========================================
+
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, value):
+        """Adds an item to the top of the stack."""
+        self.items.append(value)
+
+    def pop(self):
+        """Removes and returns the top item. Returns None if empty."""
+        if not self.is_empty():
+            return self.items.pop()
+        return None
+
+    def peek(self):
+        """Returns the top item without removing it."""
+        if not self.is_empty():
+            return self.items[-1]
+        return None
+
+    def is_empty(self):
+        """Returns True if the stack has no items."""
+        return len(self.items) == 0
+
+    def size(self):
+        """Returns the number of items in the stack."""
+        return len(self.items)
+
+
+# ==========================================
+# PART 2: USE THE STACK TO SOLVE PROBLEMS
+# ==========================================
+
+def reverse_string(text):
+    """Reverses a string using the Stack class from Part 1."""
+    stack = Stack()
+    for char in text:
+        stack.push(char)
+    
+    reversed_text = ""
+    while not stack.is_empty():
+        reversed_text += stack.pop()
+    return reversed_text
+
+def is_balanced(expression):
+    """Checks if parentheses (), [], and {} are balanced."""
+    stack = Stack()
+    pairs = {')': '(', ']': '[', '}': '{'}
+    
+    for char in expression:
+        if char in "([{":
+            stack.push(char)
+        elif char in ")]}":
+            if stack.is_empty() or stack.pop() != pairs[char]:
+                return False
+    return stack.is_empty()
+
+def simulate_undo():
+    """Simulates a basic undo system."""
+    actions = Stack()
+    
+    print("Performing actions...")
+    actions.push("Action 1: Typed text")
+    actions.push("Action 2: Changed font")
+    actions.push("Action 3: Inserted image")
+    
+    print(f"Current top action: {actions.peek()}")
+    print(f"Undoing: {actions.pop()}")
+    print(f"New top action: {actions.peek()}")
+
+
+# ==========================================
+# PART 3: LINKED-LIST VERSION
+# ==========================================
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class LinkedStack:
+    def __init__(self):
+        self.head = None
+        self._size = 0
+
+    def push(self, value):
+        new_node = Node(value)
+        new_node.next = self.head
+        self.head = new_node
+        self._size += 1
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        popped_value = self.head.value
+        self.head = self.head.next
+        self._size -= 1
+        return popped_value
+
+    def peek(self):
+        return self.head.value if self.head else None
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        return self._size
+
+
+# ==========================================
+# PART 4: SHORT ANSWER (Comments)
+# ==========================================
+
+"""
+1. Why are push and pop O(1) in a stack?
+   In a stack, you only ever add or remove from the very 'top'. 
+   Since you don't have to shift other elements (like you would 
+   when inserting into the middle of an array), the operation 
+   takes the same amount of time regardless of the stack's size.
+
+2. What makes a stack different from a queue?
+   The main difference is the order of removal. 
+   A Stack is LIFO (Last-In, First-Out) — think of a stack of plates. 
+   A Queue is FIFO (First-In, First-Out) — think of a line at a bank.
+
+3. Name two real-world systems that use stack behavior.
+   - The 'Undo' button (Ctrl+Z) in software: it pops the most recent action.
+   - The Browser Back button: it stores the history of pages in a stack.
+"""
+
+# Testing the implementation
+if __name__ == "__main__":
+    print("--- Part 2 Testing ---")
+    print(f"Reverse 'Python': {reverse_string('Python')}")
+    print(f"Is '( [ ] )' balanced?: {is_balanced('( [ ] )')}")
+    simulate_undo()
+
+    print("\n--- Part 3 Testing ---")
+    ls = LinkedStack()
+    ls.push("A")
+    ls.push("B")
+    print(f"LinkedStack Pop: {ls.pop()}")
+    print(f"LinkedStack Peek: {ls.peek()}")
